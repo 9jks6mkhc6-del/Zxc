@@ -3132,31 +3132,6 @@ def serve(host="0.0.0.0", port=None):
         app.run(host=host, port=port, threaded=True)
 
 
-if __name__ == "__main__":
-    if not BOT_TOKEN:
-        raise RuntimeError("Добавь BOT_TOKEN в переменные окружения BotHost")
-    if not ADMIN_ID:
-        raise RuntimeError("Добавь числовой ADMIN_ID в переменные окружения BotHost")
-
-    web_port = int(os.environ.get("PORT") or os.environ.get("WEB_PORT") or 8080)
-    threading.Thread(
-        target=serve,
-        kwargs={"host": "0.0.0.0", "port": web_port},
-        daemon=True,
-    ).start()
-
-    print("=" * 55)
-    print("         FIZSHOP BOT + WEB")
-    print("=" * 55)
-    print(f"Категорий/товаров в каталоге: {len(CATALOG)}")
-    print(f"Crypto Pay: {'настроен' if CRYPTO_PAY_TOKEN else 'не настроен'}")
-    print(f"Platega: {'настроен' if PLATEGA_MERCHANT_ID and PLATEGA_SECRET else 'не настроен'}")
-    print(f"Веб-сервер: порт {web_port}")
-    print("=" * 55)
-
-    bot.infinity_polling(skip_pending=True, timeout=30, long_polling_timeout=30)
-
-
 # =========================================================
 # ВЕБ-САЙТ (объединён с ботом; общая база и настройки)
 # =========================================================
@@ -4033,3 +4008,31 @@ def adm_broadcast():
 
     threading.Thread(target=go, daemon=True).start()
     return ok(total=len(users))
+
+
+# =========================================================
+# ЗАПУСК БОТА И ВЕБ-СЕРВЕРА (после объявления Flask app и всех маршрутов)
+# =========================================================
+if __name__ == "__main__":
+    if not BOT_TOKEN:
+        raise RuntimeError("Добавь BOT_TOKEN в переменные окружения BotHost")
+    if not ADMIN_ID:
+        raise RuntimeError("Добавь числовой ADMIN_ID в переменные окружения BotHost")
+
+    web_port = int(os.environ.get("PORT") or os.environ.get("WEB_PORT") or 8080)
+    threading.Thread(
+        target=serve,
+        kwargs={"host": "0.0.0.0", "port": web_port},
+        daemon=True,
+    ).start()
+
+    print("=" * 55)
+    print("         FIZSHOP BOT + WEB")
+    print("=" * 55)
+    print(f"Категорий/товаров в каталоге: {len(CATALOG)}")
+    print(f"Crypto Pay: {'настроен' if CRYPTO_PAY_TOKEN else 'не настроен'}")
+    print(f"Platega: {'настроен' if PLATEGA_MERCHANT_ID and PLATEGA_SECRET else 'не настроен'}")
+    print(f"Веб-сервер: порт {web_port}")
+    print("=" * 55)
+
+    bot.infinity_polling(skip_pending=True, timeout=30, long_polling_timeout=30)
