@@ -3123,6 +3123,15 @@ def admin_orders(call):
 # ЗАПУСК
 # =========================================================
 
+def serve(host="0.0.0.0", port=None):
+    port = int(port or os.environ.get("PORT") or os.environ.get("WEB_PORT") or 8080)
+    try:
+        from waitress import serve as wserve
+        wserve(app, host=host, port=port, threads=16)
+    except ImportError:
+        app.run(host=host, port=port, threaded=True)
+
+
 if __name__ == "__main__":
     if not BOT_TOKEN:
         raise RuntimeError("Добавь BOT_TOKEN в переменные окружения BotHost")
@@ -4024,13 +4033,3 @@ def adm_broadcast():
 
     threading.Thread(target=go, daemon=True).start()
     return ok(total=len(users))
-
-
-def serve(host="0.0.0.0", port=None):
-    port = int(port or os.environ.get("PORT") or os.environ.get("WEB_PORT") or 8080)
-    try:
-        from waitress import serve as wserve
-        wserve(app, host=host, port=port, threads=16)
-    except ImportError:
-        app.run(host=host, port=port, threaded=True)
-
