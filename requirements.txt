@@ -1,0 +1,5 @@
+pyTelegramBotAPI
+requests
+aiohttp
+Flask>=3
+waitress
